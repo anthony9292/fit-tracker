@@ -1,6 +1,7 @@
 const ExerciseModel =  require("../models/models"); 
 
-modele.exports = function (app) { 
+module.exports = function (app) { 
+
     app.get("api/workouts", (req, res) => { 
         ExerciseModel.findOne({})
         .then(workout => { 
@@ -10,4 +11,19 @@ modele.exports = function (app) {
             res.json(err); 
         });
     })
+
+    app.post("api/workouts", (req, res)  => { 
+        ExerciseModel.create({}) 
+         .then(workout => { 
+             res.json(workout); 
+         })
+         .catch(err => { 
+             res.json(err); 
+         }); 
+ 
+        })
+
+    
+
+
 }
