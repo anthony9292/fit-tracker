@@ -1,47 +1,68 @@
-const ExerciseModel =  require("../models/model"); 
+const db = require("../models"); 
+const router = require("express").Router();
 
-module.exports = function (app) { 
-
-    app.get("api/workouts", (req, res) => { 
-        ExerciseModel.findOne({})
-        .then(workout => { 
-            res.json(workout); 
-        })
-        .catch(err => { 
-            res.json(err); 
-        });
+// retrieves all workouts and adds a duration 
+router.get("/api/workouts", (req, res) => { 
+    db.Workout.aggregate([{ $set: { 
+        totalDuration: { $sum: "exercises.duration"}
+    }},
+    ])
+    .then((workouts) => { 
+        res.json(workouts);
     })
+       .catch((err) => { 
+           console.error(err); 
+           res.json(err); 
+       })});
 
-    app.post("api/workouts", (req, res)  => { 
-        ExerciseModel.create({}) 
-         .then(workout => { 
-             res.json(workout); 
+    //posting new workouts
+     router.post("/api/workouts", (req, res) => { 
+         db.Workout.create(req.body)
+         .then((workout) => {
+             res.json(workout);
          })
-         .catch(err => { 
-             res.json(err); 
-         }); 
- 
-        })
+         .catch((err) => { 
+             console.error(err);
+             res.json(err);
+         });
+     }); 
 
-  app.put("/api/workouts/:id", (req, res) => { 
-      ExerciseModel.findByIdAndUpdate(req.params.id, 
-        { 
-            $push: { exersises: req.body },
-            $inc: { totalDuration: req.body.duration },
-        }, 
-         { new: true, runValidators: true }
-        ).then(workout => { 
-            res.json(workout)
+//updates workouts by id 
+  router.put("/api/workouts/:id", (req, res) => { 
+      db.Workout.findOneAndUpdate (
+              { _id: req.params.id},
+              { $push: {exercises: req.body} },
+              { new: true }
+          ).then((workout) => { 
+              res.json(workout); 
+          })
+          .catch((err) => { 
+              console.error(err);
+              res.json(err);
+          });
         });
-  })
+   
+    //retrieves all workout information from the past 7 days 
+   router.get("/api/workouts/range", (req, res) => { 
+     db.Workout.aggregate([ 
+         {
+             $set: { 
+                 totalDuration: {$sum: "$exercises.duration"}, 
+             },
+         },
+     ] 
+
+     ).sort({ "day": -1})
+       .limit(7)
     
-   app.get("/api/workouts/range", (req, res) => { 
-       ExerciseModel.find({}).sort({day: -1}).limit(7)
-       .then(workout => { 
-           res.json(workout.reverse()); 
+       .then((workouts) => { 
+           workouts.reverse();
+           res.json(workouts); 
        })
-       .catch(err => { 
+       .catch((err) => { 
+           console.error(err); 
            res.json(err);
-       }); 
-   })
-}
+       });
+    }); 
+
+ 
