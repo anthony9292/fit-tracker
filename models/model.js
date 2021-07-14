@@ -11,7 +11,7 @@ const exerciseSchema = new Schema ({
     type: {
         type: String,
         trim: true,
-        required: "Cardio or resistance Workout"
+        required: "Cardio or resistance Workouts"
         },
         name: {
             type:String, 
