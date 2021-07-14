@@ -2,7 +2,7 @@
 MIT<br>[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Description
-
+ An Application that allows its users to easily enter and track their workout process.
   
   ## Table of contents
   - [Description](#description)
@@ -20,24 +20,17 @@ MIT<br>[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](ht
 
 ## Images 
  fit tracker gif: 
-![Sample of tech-blog app running]()
+![Sample of tech-blog app running](fit-tracker2.PNG)
 
-fit-tracker Pic: 
-![Sample of tech-blog app](techblog.gif)
+![Sample of tech-blog app running](fittracker.PNG)
 
 ## heroku 
 
-https://techblog-ndegwa.herokuapp.com/
 
 # Technologies 
-  - bcrypt
-  - connect-session-sequelize
-  - dotenv": "^10.0.0
-  - express": "^4.17.1
-  - express-handlebars
-  - express-session
-  - mysql2
-  - sequelize
+  -  express
+  - mongoose
+  - morgan
 
 ## License MIT
 I have used a mit License for this application, please see repository for documentation <https://github.com/anthony9292/Team-Generator-/blob/main/License.md>
