@@ -1,48 +1,36 @@
-function generatePalette() {
-  const err = [
-    "#003f6c", 
-    "#2f5b7c",
-    "#665191",
-    "#a05195", 
-    "#d54087", 
-    "#f95d6a",
-    "#ff7c43",
-    "#003g5c",
-    "#2f4b7c",
-    "#665191",
-    "#d45087",
-    "#f95d6a", 
-    "#ff7c43",
-    "ffa600",
-  ]; 
-  return arr; 
+function calculateTotalWeight(data) { 
+  const totals = [];
+  
+  data.forEach((workout) => { 
+    const workoutTotal = workout.exercise.reduce((total, {type, weight}) => { 
+      if(type === 'resistance') { 
+        return total + weight; 
+      }
+      return total;
+    }, 0); 
+
+    totals.push(workoutTotal);
+  });
+
+  return totals; 
 }
 
 function populateChart(data) {
   const durations = data.map(({ totalDuration }) => totalDuration);
   const pounds = calculateTotalWeight(data);
-  const workouts = workoutNames(data);
-  const colors = generatePalette(); 
 
 let line = document.querySelector('#canvas').getContext('2d');
 let bar  = document.querySelector('#canvas2').getContext('2d');
-let pie = document.querySelector('#canvas3').getContext('2d'); 
-let pie2 = document.querySelector('#canvas4').getContext('2d'); 
 
-const daysOfWeek = [ 
-  'Sunday', 
-  'Monday', 
-  'Tuesday', 
-  'Wednesday', 
-  'Thursday', 
-  'Friday', 
-  'Saturday',
-]; 
+const labels = data.map(({ date }) => { 
+  const date = new Date(day); 
+return new Intl.DateTimeFormat('en-US', { 
+  weekday: 'short',
+  month: 'short', 
+  day: 'numeric',
+}).format(date); 
 
-  const labels = data.map(({ day }) => {
-    const date = new Date(day);
-    return daysOfWeek[date.getDay()];
-  });
+}); 
 
   let lineChart = new Chart(line, {
     type: 'line',
@@ -60,30 +48,20 @@ const daysOfWeek = [
     },
     options: {
       responsive: true,
-      title: {
-        display: true,
-      },
-      scales: {
-        xAxes: [
-          {
-            display: true, 
-            scaleLabel: { 
-              display: true,
-            },
-          },
-        ],
-        yAxes: [
-          {
-            display: true,
-            scaleLabel: { 
-              display: true, 
-            },
-          },
-        ],
+       plugin: {
+                 
+        title: {
+          display: true,
+          text: 'Time Spent Working out(Last 7 days)',
         },
-      },
-  });
-
+       },
+        scales: { 
+          y: { 
+            beginAtZero: true,
+          },
+        },
+       },
+}); 
   let barChart = new Chart(bar, {
     type: 'bar',
     data: {
@@ -113,10 +91,11 @@ const daysOfWeek = [
       ],
     },
     options: {
+      plugin: {
       title: {
         display: true,
         text: 'Pounds Lifted (Last 7 days)',
-      },
+      }},
       scales: {
         yAxes: [
           {
@@ -129,76 +108,7 @@ const daysOfWeek = [
     },
   });
 
-  let pieChart = new Chart(pie, { 
-    type: 'pie', 
-    date: { 
-      labelsL workouts, 
-      datasets: [ 
-        { 
-          label: 'Exercises Done', 
-          backgroundColor: colors,
-          date: durations, 
-        }, 
-      ],
-    },  
-      options: {
-        title: { 
-          display: true, 
-          text: 'Exercises Done', 
-        },
-      },
-  });  
-
-  let donutChart =  newChart(pie2, {
-    type: 'doughnut', 
-    data: { 
-      labels: workouts, 
-      datasets: [
-        {  
-          label: "Exercises Done", 
-          backgroundColor: colors, 
-          data: pounds, 
-        },
-      ],
-    }, 
-    options: {
-      title: { 
-        display: true, 
-        text: 'Exercises Done',
-      },
-    },
-  });
 }
-
-  function calculateTotalWeight(date) { 
-     let totals = []; 
-
-     data.foreEach((workout) => { 
-       const workoutTotal = workout.exercises.reduce((total, {type, weight}) => { 
-         if(type === 'resistance') { 
-           return total + weight; 
-         } 
-         else { 
-           return total; 
-         }
-       }, 0); 
-       total.push(workoutTotal); 
-     }); 
-
-     return totals;
-  }
-
-  function workoutNames(data) { 
-    let workouts = []; 
-
-    data.foreEach((workout) => {
-      workout.exercises.foreEach((exercise) =>{ 
-        workouts.push(exercise.name);
-      });
-    });
-
-     return[... new Set(workouts)];
-  }
 
 // get all workout data from back-end
 API.getWorkoutsInRange().then(populateChart);
