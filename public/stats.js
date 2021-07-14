@@ -26,18 +26,22 @@ function populateChart(data) {
 
 let line = document.querySelector('#canvas').getContext('2d');
 let bar  = document.querySelector('#canvas2').getContext('2d');
-let pie = document.querySelector('#canvas3').getContex('2d'); 
-let pie2 = document.querySelector('')
+let pie = document.querySelector('#canvas3').getContext('2d'); 
+let pie2 = document.querySelector('#canvas4').getContext('2d'); 
+
+const daysOfWeek = [ 
+  'Sunday', 
+  'Monday', 
+  'Tuesday', 
+  'Wednesday', 
+  'Thursday', 
+  'Friday', 
+  'Saturday',
+]; 
 
   const labels = data.map(({ day }) => {
     const date = new Date(day);
-
-    // Use JavaScript's `Intl` object to help format dates
-    return new Intl.DateTimeFormat('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-    }).format(date);
+    return daysOfWeek[date.getDay()];
   });
 
   let lineChart = new Chart(line, {
@@ -58,14 +62,26 @@ let pie2 = document.querySelector('')
       responsive: true,
       title: {
         display: true,
-        text: 'Time Spent Working Out (Last 7 days)',
       },
       scales: {
-        y: {
-          beginAtZero: true,
+        xAxes: [
+          {
+            display: true, 
+            scaleLabel: { 
+              display: true,
+            },
+          },
+        ],
+        yAxes: [
+          {
+            display: true,
+            scaleLabel: { 
+              display: true, 
+            },
+          },
+        ],
         },
       },
-    },
   });
 
   let barChart = new Chart(bar, {
@@ -112,7 +128,77 @@ let pie2 = document.querySelector('')
       },
     },
   });
+
+  let pieChart = new Chart(pie, { 
+    type: 'pie', 
+    date: { 
+      labelsL workouts, 
+      datasets: [ 
+        { 
+          label: 'Exercises Done', 
+          backgroundColor: colors,
+          date: durations, 
+        }, 
+      ],
+    },  
+      options: {
+        title: { 
+          display: true, 
+          text: 'Exercises Done', 
+        },
+      },
+  });  
+
+  let donutChart =  newChart(pie2, {
+    type: 'doughnut', 
+    data: { 
+      labels: workouts, 
+      datasets: [
+        {  
+          label: "Exercises Done", 
+          backgroundColor: colors, 
+          data: pounds, 
+        },
+      ],
+    }, 
+    options: {
+      title: { 
+        display: true, 
+        text: 'Exercises Done',
+      },
+    },
+  });
 }
+
+  function calculateTotalWeight(date) { 
+     let totals = []; 
+
+     data.foreEach((workout) => { 
+       const workoutTotal = workout.exercises.reduce((total, {type, weight}) => { 
+         if(type === 'resistance') { 
+           return total + weight; 
+         } 
+         else { 
+           return total; 
+         }
+       }, 0); 
+       total.push(workoutTotal); 
+     }); 
+
+     return totals;
+  }
+
+  function workoutNames(data) { 
+    let workouts = []; 
+
+    data.foreEach((workout) => {
+      workout.exercises.foreEach((exercise) =>{ 
+        workouts.push(exercise.name);
+      });
+    });
+
+     return[... new Set(workouts)];
+  }
 
 // get all workout data from back-end
 API.getWorkoutsInRange().then(populateChart);
