@@ -1,26 +1,33 @@
-function calculateTotalWeight(data) {
-  const totals = [];
-
-  data.forEach((workout) => {
-    const workoutTotal = workout.exercises.reduce((total, { type, weight }) => {
-      if (type === 'resistance') {
-        return total + weight;
-      }
-      return total;
-    }, 0);
-
-    totals.push(workoutTotal);
-  });
-
-  return totals;
+function generatePalette() {
+  const err = [
+    "#003f6c", 
+    "#2f5b7c",
+    "#665191",
+    "#a05195", 
+    "#d54087", 
+    "#f95d6a",
+    "#ff7c43",
+    "#003g5c",
+    "#2f4b7c",
+    "#665191",
+    "#d45087",
+    "#f95d6a", 
+    "#ff7c43",
+    "ffa600",
+  ]; 
+  return arr; 
 }
 
 function populateChart(data) {
   const durations = data.map(({ totalDuration }) => totalDuration);
   const pounds = calculateTotalWeight(data);
+  const workouts = workoutNames(data);
+  const colors = generatePalette(); 
 
-  const line = document.querySelector('#canvas').getContext('2d');
-  const bar = document.querySelector('#canvas2').getContext('2d');
+let line = document.querySelector('#canvas').getContext('2d');
+let bar  = document.querySelector('#canvas2').getContext('2d');
+let pie = document.querySelector('#canvas3').getContex('2d'); 
+let pie2 = document.querySelector('')
 
   const labels = data.map(({ day }) => {
     const date = new Date(day);
