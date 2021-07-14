@@ -1,36 +1,36 @@
 function calculateTotalWeight(data) { 
-  const totals = [];
-  
+  let totals = []; 
+
   data.forEach((workout) => { 
-    const workoutTotal = workout.exercise.reduce((total, {type, weight}) => { 
-      if(type === 'resistance') { 
-        return total + weight; 
+    const workoutTotal = workout.exercises.reduce((total, { type, weight }) => { 
+      if (type === 'resistance') { 
+        return total + weight;
       }
-      return total;
-    }, 0); 
-
+      else { 
+        return total;
+      }
+    }, 0);
     totals.push(workoutTotal);
-  });
-
-  return totals; 
+  }); 
+  return totals;
 }
 
 function populateChart(data) {
   const durations = data.map(({ totalDuration }) => totalDuration);
   const pounds = calculateTotalWeight(data);
-
+  
 let line = document.querySelector('#canvas').getContext('2d');
 let bar  = document.querySelector('#canvas2').getContext('2d');
 
-const labels = data.map(({ date }) => { 
+const labels = data.map(({ day }) => { 
   const date = new Date(day); 
-return new Intl.DateTimeFormat('en-US', { 
+ // Use JavaScript's `Intl` object to help format dates
+ return new Intl.DateTimeFormat('en-US', {
   weekday: 'short',
-  month: 'short', 
+  month: 'short',
   day: 'numeric',
-}).format(date); 
-
-}); 
+}).format(date);
+});
 
   let lineChart = new Chart(line, {
     type: 'line',
@@ -48,20 +48,19 @@ return new Intl.DateTimeFormat('en-US', {
     },
     options: {
       responsive: true,
-       plugin: {
-                 
         title: {
           display: true,
-          text: 'Time Spent Working out(Last 7 days)',
+          text: 'Time Spent Working Out (Last 7 days)',
         },
-       },
         scales: { 
-          y: { 
-            beginAtZero: true,
+          y: 
+            {
+              beginAtZero: true
+              },
+            },
           },
-        },
-       },
 }); 
+
   let barChart = new Chart(bar, {
     type: 'bar',
     data: {
@@ -91,11 +90,10 @@ return new Intl.DateTimeFormat('en-US', {
       ],
     },
     options: {
-      plugin: {
       title: {
         display: true,
         text: 'Pounds Lifted (Last 7 days)',
-      }},
+      },
       scales: {
         yAxes: [
           {
@@ -107,8 +105,6 @@ return new Intl.DateTimeFormat('en-US', {
       },
     },
   });
-
 }
-
 // get all workout data from back-end
 API.getWorkoutsInRange().then(populateChart);
